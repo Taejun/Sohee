@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title> User info</title>
+	<script src="{{ static_url("jquery.min.js")}}"></script>
+	</head>
+	
+	<body>
+	
+		<script >
+		
+		var s = '{{data}}';
+		var obj = jQuery.parseJSON(s);
+		//alert(obj[0].user);
+		
+		document.write(obj[0].uid + "<br>");
+		objView(obj[0].user);
+		
+		objView(obj[0].money);
+		
+		document.write("==Friend List== <br>")
+
+		objView(obj[0].friend[0].uid);
+		document.write(obj[0].friend[0].uid);
+		document.write(obj[0].friend[1].uid);
+/*	
+		for ( key in obj[0].user ) {
+			temp = eval("obj[0].user."+key);
+			alert(key + " = " + temp);
+		}
+		//alert(obj[0].user.account);
+		//alert(obj[0].uid);
+		for ( key in obj[0] ) {
+			temp = eval("obj[0]."+key);
+			//alert(temp);
+			//alert(key + " = " + );
+		}
+*/			
+		var temps;
+		function objView(tempObj) {
+			for ( key in tempObj ) {
+				temps = eval("tempObj."+key);
+				document.write(key + " = " + temps + "<br>");
+			}
+		}
+		</script>
+	</body>
+
+
+</html>
