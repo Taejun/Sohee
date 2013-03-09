@@ -1,4 +1,4 @@
-Sohee
+Fantasy.py
 =====
 
-Python game server project
+Python Game Server
