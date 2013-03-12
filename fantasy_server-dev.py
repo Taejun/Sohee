@@ -1,4 +1,8 @@
 #-*- coding: utf-8 -*-
+# Private modules
+import FOA_scheme
+
+# Public modules
 import os.path
 import tornado.auth
 import tornado.escape
@@ -26,7 +30,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
-            (r"/", MainHandler),
+            (r"/auth/login",Start_GameHandler),
             (r"/game/start",Start_GameHandler),
             (r"/store/list",MainHandler),
             (r"/store/buy",MainHandler),
@@ -68,6 +72,26 @@ class Start_GameHandler(BaseHandler):
         cursor = db.user.find(find_str)
         query = yield motor.Op(cursor.to_list)        
         data = json.dumps(query,default=json_util.default)
+        
+        user = Userinfo( uid='taejun',
+              passwd='md5_string',
+              regdate=19750505, 
+              level=5,
+              exp=2000,
+              money=20000,
+              cach=0)
+
+        user_schema = for_jsonschema(user)
+        user_data = to_python(user)
+
+        print user
+        print '\n'
+        print user_schema
+        print '\n'
+        print user_data
+
+
+        
         
         self.render("user_info.html",data=data)        
         
