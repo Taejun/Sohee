@@ -1,8 +1,4 @@
 #-*- coding: utf-8 -*-
-# Private modules
-import FOA_scheme
-
-# Public modules
 import os.path
 import tornado.auth
 import tornado.escape
@@ -15,6 +11,12 @@ import motor
 import json
 import codecs
 
+from schematics.models import Model
+from schematics.types import StringType, IntType, UUIDType
+from schematics.serialize import to_python, for_jsonschema, from_jsonschema
+from schematics.types.compound import (ListType,ModelType)
+
+import FOA_scheme
 from bson import SON
 from bson import json_util
 from motor import MotorClient
@@ -32,7 +34,7 @@ class Application(tornado.web.Application):
             (r"/", MainHandler),
             (r"/auth/login",Start_GameHandler),
             (r"/game/start",Start_GameHandler),
-            (r"/store/list",MainHandler),
+            (r"/store/list",TestHandler),
             (r"/store/buy",MainHandler),
             (r"/user/item/list",MainHandler),
             (r"/user/friend/list",MainHandler)
@@ -72,28 +74,39 @@ class Start_GameHandler(BaseHandler):
         cursor = db.user.find(find_str)
         query = yield motor.Op(cursor.to_list)        
         data = json.dumps(query,default=json_util.default)
+    	self.render("user_info.html",data=data)
         
-        user = Userinfo( uid='taejun',
-              passwd='md5_string',
-              regdate=19750505, 
-              level=5,
-              exp=2000,
-              money=20000,
-              cach=0)
-
+        
+'''
+        
+        user = FOA_scheme.Userinfo( uid='taejun', passwd='md5_string', regdate=19750505, level=5, exp=2000, money=20000, cash=0)
         user_schema = for_jsonschema(user)
         user_data = to_python(user)
-
-        print user
-        print '\n'
-        print user_schema
-        print '\n'
-        print user_data
-
-
+        user_data = json.dumps(user_data,default=json_util.default)
         
+        self.write(self.request.headers["user-agent"]+ "<br>")
+        self.write(user_data)
+        self.finish()
+'''   
         
-        self.render("user_info.html",data=data)        
+class TestHandler(BaseHandler):
+	@tornado.web.asynchronous
+	@tornado.gen.engine
+	def get(self):
+		username = self.get_argument("username","")
+
+		find_str = {}
+		find_str["user.account"] = username
+
+		db = self.settings['db_conn'].userdb
+
+		cursor = db.user.find(find_str)
+		query = yield motor.Op(cursor.to_list)
+		data = json.dumps(query,default=json_util.default)
+	
+		self.render("index.html",data=data)
+        
+                
         
 
 def main():

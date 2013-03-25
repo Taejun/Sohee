@@ -22,7 +22,7 @@ user = Userinfo( uid='taejun',
               level=5,
               exp=2000,
               money=20000,
-              cach=0)
+              cash=0)
 
 user_schema = for_jsonschema(user)
 user_data = to_python(user)
@@ -32,5 +32,4 @@ print '\n'
 print user_schema
 print '\n'
 print user_data
-
 '''
